@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 import json
 import logging
 import re
@@ -114,4 +113,4 @@ async def query_agent(payload: AgentQuery):
         logger.exception("Error while calling agent")
         # Return a cleaner error message but log full traceback
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
->>>>>>> Stashed changes
+

@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -23,4 +22,4 @@ STATIC_DIR = BASE_DIR / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
->>>>>>> Stashed changes
+
