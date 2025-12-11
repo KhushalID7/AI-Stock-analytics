@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -13,7 +12,6 @@ load_dotenv()
 app = FastAPI(title="AI Stock Analytics API")
 
 
-# Register routes
 app.include_router(health_router)
 app.include_router(agent_router)
 
@@ -22,4 +20,3 @@ STATIC_DIR = BASE_DIR / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-
