@@ -3,6 +3,31 @@ import axios from 'axios';
 import type { AgentResponse } from '../types';
 import { queryAgent as apiQueryAgent } from '../services/api';
 
+function extractChartUrlsFromText(text: string): string[] {
+  const pattern = /\/static\/charts\/[^\s"')]+\.png/gi;
+  const matches = text.match(pattern) || [];
+  return Array.from(new Set(matches)).filter((u) => u.startsWith('/static/'));
+}
+
+function pickBestSummary(res: AgentResponse): string {
+  const s = (res.summary ?? '').trim();
+  const raw =
+    typeof res.raw_result === 'string'
+      ? res.raw_result
+      : res.raw_result?.output ||
+        res.raw_result?.final_answer ||
+        res.raw_result?.message ||
+        res.raw_result?.detail ||
+        '';
+
+  const looksGeneric =
+    s.length < 120 ||
+    /^i('?| a)m (fetching|analyzing)/i.test(s) ||
+    /^ok,|^sure/i.test(s);
+
+  return (looksGeneric ? raw : s) || raw || s || '';
+}
+
 const useStockAnalysis = () => {
   const [data, setData] = useState<AgentResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -14,16 +39,17 @@ const useStockAnalysis = () => {
     try {
       const res = await apiQueryAgent(input);
 
-      const fallbackSummary =
-        (typeof res.raw_result === 'string' && res.raw_result) ||
-        res.raw_result?.output ||
-        res.raw_result?.message ||
-        res.raw_result?.detail ||
-        '';
+      const rawText =
+        typeof res.raw_result === 'string' ? res.raw_result : JSON.stringify(res.raw_result ?? res);
+
+      const chartUrls =
+        Array.isArray(res.chart_urls) && res.chart_urls.length > 0
+          ? res.chart_urls
+          : extractChartUrlsFromText(rawText);
 
       const mapped: AgentResponse = {
-        summary: (res.summary || fallbackSummary || '').toString(),
-        chart_urls: res.chart_urls ?? [],
+        summary: pickBestSummary(res),
+        chart_urls: chartUrls,
         raw_result: res.raw_result ?? res,
       };
 

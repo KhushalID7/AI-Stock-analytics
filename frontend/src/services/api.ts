@@ -3,7 +3,7 @@ import type { AgentResponse } from '../types';
 
 const api = axios.create({
   baseURL: '', // same-origin; Vite proxy forwards /api and /static
-  timeout: 60000,
+  timeout: 120000, // increase timeout for long-running agent chains
 });
 
 export async function queryAgent(input: string): Promise<AgentResponse> {

@@ -9,7 +9,7 @@ const StockInput: React.FC<StockInputProps> = ({ onSubmit, loading = false }) =>
   const [query, setQuery] = useState('');
 
   const presetQueries = [
-    'Show me AAPL stock prices for the last 3 months',
+    'Show me AAPL stock prices for the last 3 days',
     'Calculate moving averages for MSFT',
     'Generate a chart for TSLA stock with Bollinger Bands'
   ];
